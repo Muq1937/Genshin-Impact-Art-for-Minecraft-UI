@@ -1,0 +1,20 @@
+# Gradle / Loom
+.gradle/
+build/
+run/
+out/
+*.class
+
+# IDE
+.idea/
+*.iml
+.vscode/
+.classpath
+.project
+.settings/
+bin/
+
+# Sample themes contain third-party character art extracted from Wallpaper Engine.
+# They are bundled into your local jar build, but are not committed. Remove this line
+# only if you have the rights to redistribute the art.
+sample-themes/

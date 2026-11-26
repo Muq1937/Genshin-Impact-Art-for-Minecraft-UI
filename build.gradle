@@ -1,0 +1,103 @@
+plugins {
+    id 'fabric-loom' version "${loom_version}"
+    id 'java'
+}
+
+version = project.mod_version
+group = project.maven_group
+
+base {
+    archivesName = project.archives_base_name
+}
+
+repositories {
+    mavenCentral()
+}
+
+// Automated in-game check: `gradlew runClientGameTest` boots the client, applies the theme, opens screens
+// and saves screenshots to build/run/clientGameTest/screenshots.
+fabricApi {
+    configureTests {
+        createSourceSet = true
+        modId = "genshinui-gametest"
+        enableGameTests = false
+        enableClientGameTests = true
+        eula = true
+    }
+}
+
+loom {
+    runs {
+        client {
+            programArgs "--username", "Dev"
+        }
+    }
+}
+
+dependencies {
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+}
+
+// Sample themes live in /sample-themes (not committed: they contain third-party art).
+// If present, they are bundled into the jar under /genshinui_samples and installed on first launch.
+processResources {
+    inputs.property "version", project.version
+    filesMatching("fabric.mod.json") {
+        expand "version": project.version
+    }
+    // `gradlew build -PnoSamples` makes a jar without the third-party sample art (safe to share)
+    if (!project.hasProperty('noSamples')) {
+        from(rootProject.file('sample-themes')) {
+            into 'genshinui_samples'
+        }
+    }
+}
+
+// Offline preview: renders every theme's generated textures + a mock screen into build/theme-preview
+// without launching Minecraft. Usage: gradlew previewThemes
+tasks.register('previewThemes', JavaExec) {
+    dependsOn classes
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'com.genshinui.dev.PreviewTool'
+    args rootProject.file('sample-themes').absolutePath,
+         "${System.getProperty('user.home')}/.gradle/caches/fabric-loom/${project.minecraft_version}/minecraft-client.jar",
+         layout.buildDirectory.dir('theme-preview').get().asFile.absolutePath
+}
+
+// Dev check of the Wallpaper Engine extractor: gradlew weTest -Pids=3484084483,3578431514
+tasks.register('weTest', JavaExec) {
+    dependsOn classes
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'com.genshinui.dev.WeTool'
+    args([layout.buildDirectory.dir('we-test').get().asFile.absolutePath] + (project.findProperty('ids') ?: '').toString().tokenize(','))
+}
+
+tasks.withType(JavaCompile).configureEach {
+    it.options.release = 21
+    it.options.encoding = 'UTF-8'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+}
+
+// Copies the built mod into the 1.21.7 Fabric installation from the official launcher.
+tasks.register('installToLauncher', Copy) {
+    dependsOn remapJar
+    from remapJar.archiveFile
+    into "${System.getenv('APPDATA')}/.minecraft/installations/fabric-loader-1.21.7/mods"
+}
+
+// Copies the built mod into the "Genshin UI 1.21.7" Prism Launcher instance (replacing the old jar).
+tasks.register('installToPrism', Copy) {
+    dependsOn remapJar
+    def modsDir = "${System.getenv('APPDATA')}/PrismLauncher/instances/GenshinUI-1.21.7/minecraft/mods"
+    doFirst { fileTree(modsDir) { include 'genshin-ui-themes-*.jar' }.each { it.delete() } }
+    from remapJar.archiveFile
+    into modsDir
+}
+

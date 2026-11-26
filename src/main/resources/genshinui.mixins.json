@@ -1,0 +1,19 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.genshinui.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "client": [
+    "BookOpenScreenMixin",
+    "DrawContextMixin",
+    "GenericContainerScreenMixin",
+    "HandledScreenMixin",
+    "RecipeBookScreenAccessor",
+    "RecipeBookWidgetAccessor",
+    "RecipeBookWidgetMixin",
+    "ScreenMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
