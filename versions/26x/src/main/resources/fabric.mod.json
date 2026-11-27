@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "genshinui",
+  "version": "${version}",
+  "name": "Genshin UI Themes",
+  "description": "Re-skins every Minecraft GUI (inventories, hotbar, buttons, tooltips, HUD icons, menu background) with character art. Pick a theme, or upload your own image and crop it per UI.",
+  "authors": ["GenshinUI"],
+  "license": "MIT",
+  "icon": "assets/genshinui/icon.png",
+  "environment": "client",
+  "entrypoints": {
+    "client": ["com.genshinui.GenshinUIClient"]
+  },
+  "mixins": ["genshinui.mixins.json"],
+  "depends": {
+    "fabricloader": ">=0.19.0",
+    "minecraft": "${minecraft_dep}",
+    "java": ">=25",
+    "fabric-api": "*"
+  }
+}

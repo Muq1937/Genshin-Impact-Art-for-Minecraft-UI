@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "id": "genshinui-gametest",
+  "version": "1.0.0",
+  "name": "Genshin UI Themes - client gametest",
+  "environment": "client",
+  "entrypoints": {
+    "fabric-client-gametest": ["com.genshinui.gametest.GenshinUIClientGameTest"]
+  },
+  "depends": {
+    "genshinui": "*"
+  }
+}

@@ -1,0 +1,76 @@
+// Shared build logic for the Minecraft 26.x versions (unobfuscated, Mojang names, Java 25).
+// Each versions/<mc>/build.gradle applies the Loom plugin and then this file.
+def shared = rootProject.file('../26x')
+def repoRoot = rootProject.file('../..')
+
+version = "${project.mod_version}+mc${project.minecraft_version}"
+group = 'com.genshinui'
+base { archivesName = 'genshin-ui-themes' }
+
+fabricApi {
+    configureTests {
+        createSourceSet = true
+        modId = "genshinui-gametest"
+        enableGameTests = false
+        enableClientGameTests = true
+        eula = true
+    }
+}
+
+sourceSets {
+    main {
+        // per-version compat code (src/main/java of versions/<mc>) + shared 26.x code + Minecraft-independent code
+        java.srcDirs = [project.file('src/main/java'), new File(shared, 'src/main/java'), new File(repoRoot, 'src/common/java')]
+        resources.srcDirs = [new File(shared, 'src/main/resources')]
+    }
+    gametest {
+        java.srcDirs = [new File(shared, 'src/gametest/java')]
+        resources.srcDirs = [new File(shared, 'src/gametest/resources')]
+    }
+}
+
+loom {
+    runs {
+        // keep the test/dev game modest on RAM
+        configureEach {
+            vmArgs "-Xmx2G"
+        }
+        client {
+            programArgs "--username", "Dev"
+        }
+    }
+}
+
+dependencies {
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    implementation "net.fabricmc:fabric-loader:${project.loader_version}"
+    implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+}
+
+processResources {
+    def props = [version: project.version, minecraft_dep: project.minecraft_dep]
+    inputs.properties props
+    filesMatching("fabric.mod.json") {
+        expand props
+    }
+    // shared assets (icon, lang) from the main project
+    from(new File(repoRoot, 'src/main/resources/assets')) {
+        into 'assets'
+    }
+    // `-PnoSamples` builds a jar without the third-party sample art
+    if (!project.hasProperty('noSamples')) {
+        from(new File(repoRoot, 'sample-themes')) {
+            into 'genshinui_samples'
+        }
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    it.options.release = 25
+    it.options.encoding = 'UTF-8'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
+}

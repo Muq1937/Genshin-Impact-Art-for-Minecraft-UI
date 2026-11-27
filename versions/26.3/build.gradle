@@ -1,0 +1,5 @@
+plugins {
+    id 'net.fabricmc.fabric-loom' version "${loom_version}"
+}
+
+apply from: '../26x/build-common.gradle'

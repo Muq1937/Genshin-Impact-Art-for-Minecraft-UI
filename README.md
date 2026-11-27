@@ -1,4 +1,4 @@
-# Genshin UI Themes (Fabric 1.21.7)
+# Genshin UI Themes (Fabric 1.21.7, 26.2, 26.3)
 
 Re-skins every Minecraft GUI with character art, in the style of HD character UI packs, but generated
 on the fly from **any image you choose**, with a per-UI crop editor.
@@ -44,7 +44,19 @@ gradlew previewThemes        # renders theme textures + mock screens to build/th
 gradlew runClientGameTest    # boots the game, applies themes, saves screenshots to build/run/clientGameTest/screenshots
 ```
 
-Requires Fabric Loader ≥ 0.16 and Fabric API.
+Requires Fabric API. Minecraft 1.21.7 needs Fabric Loader ≥ 0.16 and Java 21; 26.2 and 26.3 need Loader ≥ 0.19 and Java 25.
+
+### Project layout
+
+| Path | Contents |
+|---|---|
+| `src/common/java` | Minecraft-independent code shared by every version: theme model, compositor, pack builder, Wallpaper Engine reader |
+| `src/main`, `src/gametest` | Minecraft **1.21.7** (Yarn names). Built by the root project. |
+| `versions/26x` | Minecraft **26.x** code (Mojang names, new GUI extractor API), shared by 26.2 and 26.3 |
+| `versions/26.2`, `versions/26.3` | Standalone builds for each version, plus tiny per-version compat classes |
+
+Build the 26.x versions with `-p`, e.g. `gradlew -p versions/26.3 build` (jar in `versions/26.3/build/libs`).
+`runClientGameTest` and `-PnoSamples` work the same way there.
 
 ## Sample themes / art extraction
 

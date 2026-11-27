@@ -16,7 +16,7 @@ public enum UiTarget {
             "container/creative_inventory/tab_items", "container/creative_inventory/tab_inventory", "container/creative_inventory/tab_item_search"),
     STATIONS("stations", "Workstations & Villager", Kind.CONTAINER, 176, 166,
             "container/anvil", "container/smithing", "container/grindstone", "container/stonecutter", "container/loom", "container/cartography_table",
-            "container/enchanting_table", "container/brewing_stand", "container/beacon", "container/villager", "container/horse"),
+            "container/enchanting_table", "container/brewing_stand", "container/beacon", "container/villager", "container/horse", "container/nautilus"),
     RECIPE_BOOK("recipe_book", "Recipe Book: Inventory", Kind.CONTAINER, 147, 166, "recipe_book"),
     RECIPE_BOOK_CRAFTING("recipe_book_crafting", "Recipe Book: Crafting", Kind.CONTAINER, 147, 166, "recipe_book"),
     RECIPE_BOOK_FURNACE("recipe_book_furnace", "Recipe Book: Furnaces", Kind.CONTAINER, 147, 166, "recipe_book"),

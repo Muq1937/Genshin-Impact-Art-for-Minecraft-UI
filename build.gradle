@@ -14,6 +14,16 @@ repositories {
     mavenCentral()
 }
 
+// Minecraft-independent code (themes, compositor, pack builder, Wallpaper Engine reader) is shared with the
+// 26.x builds in versions/.
+sourceSets {
+    main {
+        java {
+            srcDir 'src/common/java'
+        }
+    }
+}
+
 // Automated in-game check: `gradlew runClientGameTest` boots the client, applies the theme, opens screens
 // and saves screenshots to build/run/clientGameTest/screenshots.
 fabricApi {

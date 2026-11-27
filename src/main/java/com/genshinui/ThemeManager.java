@@ -202,6 +202,7 @@ public final class ThemeManager {
                 long t0 = System.currentTimeMillis();
                 new PackBuilder(theme, VANILLA, scale, i -> store.image(theme, i), packDir()).build(format, stamp(theme));
                 GenshinUIClient.LOGGER.info("Built theme pack '{}' in {} ms", theme.id, System.currentTimeMillis() - t0);
+                store.clearCache(); // free the full-size source art; screens reload it on demand
                 client.execute(() -> {
                     enablePack(client, true);
                     status = "";
